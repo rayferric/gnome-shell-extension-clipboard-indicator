@@ -99,7 +99,7 @@
     </key>
     <key name="save-image" type="b">
       <default>true</default>
-      <summary>Save image to clipboard</summary>
+      <summary>Support images</summary>
     </key>
       <key name="support-png" type="b">
       <default>false</default>
