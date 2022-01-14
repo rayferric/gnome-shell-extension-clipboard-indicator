@@ -529,6 +529,11 @@ const ClipboardIndicator = Lang.Class({
             this._refreshIndicator();
         }
     },
+    
+    _ParseDolphinPath: function (values) {
+        // Dolphin return file:// + $PATH.
+        return values.substring(0, 7) === 'file://' ? values.substring(7) : values;
+    },
 
     _refreshIndicator: function () {
         if (PRIVATEMODE) return; // Private mode, do not.
@@ -562,8 +567,7 @@ const ClipboardIndicator = Lang.Class({
                     const type = values.substring(values.length - 3);
 
                     if (support_image_type.indexOf(type) !== -1) {
-                        // Dolphin return file:// + $PATH.
-                        const path = values.substring(0, 7) === 'file://' ? values.substring(7) : values;
+                        const path = that._ParseDolphinPath(values)
                         
                         const file = Gio.file_new_for_path(path);
                         if (!file.query_exists(null)) {
