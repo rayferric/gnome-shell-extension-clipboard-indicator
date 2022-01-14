@@ -553,10 +553,9 @@ const ClipboardIndicator = Lang.Class({
             }
             else {
                 const items = text.split('\n');
-                let blockText = false;
                 let hasText = false;
 
-                items.map((values) => {
+                items.forEach((values) => {
                     // Dolphin debugger
                     if (!values.length) return;
 
@@ -581,12 +580,8 @@ const ClipboardIndicator = Lang.Class({
                     else {
                         hasText = true;
                     }
-
-                    if (hasText && !blockText) {                            
-                        blockText = true
-                        that._processClipboardContent(text, "text");
-                    }
                 })
+                hasText && that._processClipboardContent(text, 'text');
             }
         });
     },
