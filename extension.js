@@ -189,7 +189,6 @@ const ClipboardIndicator = Lang.Class({
 
             // Add cached items
             clipHistory.forEach(function (buffer) {
-               
                 if (typeof buffer === 'string') {
                     // Old cache format
                     that._addEntry(buffer);
@@ -353,8 +352,7 @@ const ClipboardIndicator = Lang.Class({
 
         if (favorite) {
             this.favoritesSection.addMenuItem(menuItem, 0);
-        } 
-        else {
+        } else {
             this.historySection.addMenuItem(menuItem, 0);
         }
 
@@ -375,27 +373,31 @@ const ClipboardIndicator = Lang.Class({
         this._updateCache();
     },
 
-    _removeAll: function () {
+    _confirmRemoveAll: function () {
         const title = _("Clear all?");
         const message = _("Are you sure you want to delete all clipboard items?");
         const sub_message = _("This operation cannot be undone.");
 
         ConfirmDialog.openConfirmDialog(title, message, sub_message, _("Clear"), _("Cancel"), () => {
             let that = this;
-            // We can't actually remove all items, because the clipboard still
-            // has data that will be re-captured on next refresh, so we remove
-            // all except the currently selected item
-            // Don't remove favorites here
-            that.historySection._getMenuItems().forEach(function (mItem) {
-                if (!mItem.currentlySelected) {
-                    if (mItem.type === "image") deleteImage(mItem.clipContents);
-                    let idx = that.clipItemsRadioGroup.indexOf(mItem);
-                    mItem.destroy();
-                    that.clipItemsRadioGroup.splice(idx,1);
-                }
-            });
-            that._updateCache();
-            that._showNotification(_("Clipboard history cleared"));
+            that._clearHistory();
+        }
+      );
+    },
+
+    _clearHistory: function () {
+        let that = this;
+        // We can't actually remove all items, because the clipboard still
+        // has data that will be re-captured on next refresh, so we remove
+        // all except the currently selected item
+        // Don't remove favorites here
+        that.historySection._getMenuItems().forEach(function (mItem) {
+            if (!mItem.currentlySelected) {
+                if (mItem.type === "image") deleteImage(mItem.clipContents);
+                let idx = that.clipItemsRadioGroup.indexOf(mItem);
+                mItem.destroy();
+                that.clipItemsRadioGroup.splice(idx, 1);
+            }
         });
         that._updateCache();
         that._showNotification(_("Clipboard history cleared"));    },
@@ -590,16 +592,16 @@ const ClipboardIndicator = Lang.Class({
     _processClipboardContent (byteContent, type, name) {
         const that = this;
         let content;
-        if (type === "text") {
+        if (type === "image") {
+            content = writeImage(byteContent, name);
+        }
+        else {
             if (!STRIP_TEXT) {
                 content = byteContent;
             }
             else {
                 content = byteContent.trim();
             }
-        }
-        else {
-            content = writeImage(byteContent, name);
         }
 
         if (content !== "" && content) {
@@ -633,7 +635,7 @@ const ClipboardIndicator = Lang.Class({
         this._addEntry(item.clipContents, item.clipFavorite, item.currentlySelected, false, type ?? item.type);
     },
 
-    _findItem: function (content, type) {
+    _findItem: function (content) {
         return this.clipItemsRadioGroup.filter(
             item => item.clipContents === content)[0];
     },
