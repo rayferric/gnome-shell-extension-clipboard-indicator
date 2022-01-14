@@ -189,8 +189,14 @@ const ClipboardIndicator = Lang.Class({
 
             // Add cached items
             clipHistory.forEach(function (buffer) {
-                const { contents, favorite, type } = buffer;
-                that._addEntry(contents, favorite, true, false, type);
+               
+                if (typeof buffer === 'string') {
+                    // Old cache format
+                    that._addEntry(buffer);
+                } else {
+                    const { contents, favorite, type } = buffer;
+                    that._addEntry(contents, favorite, true, false, type);
+                }
             });
 
             // Add separator
@@ -445,11 +451,11 @@ const ClipboardIndicator = Lang.Class({
                 that.setOrnament(PopupMenu.Ornament.DOT);
                 that.currentlySelected = true;
                 if (autoSet !== false) {
-                    if (type === "text") {
-                        Clipboard.set_text(CLIPBOARD_TYPE, clipContents);
+                    if (type === "image") {
+                        Clipboard.set_content(CLIPBOARD_TYPE, SUPPORT_PNG ? "image/png" : "image/jpeg", getImage(clipContents));
                     }
                     else {
-                        Clipboard.set_content(CLIPBOARD_TYPE, SUPPORT_PNG ? "image/png" : "image/jpeg", getImage(clipContents));
+                        Clipboard.set_text(CLIPBOARD_TYPE, clipContents);
                     }
                 }
             }
@@ -477,11 +483,11 @@ const ClipboardIndicator = Lang.Class({
                 that.setOrnament(PopupMenu.Ornament.DOT);
                 that.currentlySelected = true;
                 if (autoSet !== false) {
-                    if (type === "text") {
-                        Clipboard.set_text(CLIPBOARD_TYPE, clipContents);    
+                    if (type === "image") {
+                        Clipboard.set_content(CLIPBOARD_TYPE, SUPPORT_PNG ? "image/png" : "image/jpeg", getImage(clipContents));
                     }
                     else {
-                        Clipboard.set_content(CLIPBOARD_TYPE, SUPPORT_PNG ? "image/png" : "image/jpeg", getImage(clipContents));
+                        Clipboard.set_text(CLIPBOARD_TYPE, clipContents);    
                     }
                 }
             }
