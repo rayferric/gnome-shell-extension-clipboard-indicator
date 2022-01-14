@@ -264,7 +264,15 @@ const ClipboardIndicator = Lang.Class({
 
     _addEntry: function (buffer, favorite, autoSelect, autoSetClip, type, bufferBytes = false) {
         let menuItem = new PopupMenu.PopupMenuItem('');
-        if(type !== 'text') {
+
+        menuItem.menu = this.menu;
+        menuItem.clipContents = buffer;
+        menuItem.clipFavorite = favorite;
+        menuItem.type = type;
+        menuItem.radioGroup = this.clipItemsRadioGroup;
+        menuItem.buttonPressId = menuItem.connect('activate', Lang.bind(menuItem, this._onMenuItemSelectedAndMenuClose));
+
+        if(type === 'image') {
             const icon = new St.Icon({
                 icon_size: 72,
                 style_class: 'imagem-icon'
@@ -283,18 +291,11 @@ const ClipboardIndicator = Lang.Class({
     
             menuItem.actor.add_child(icofavBtn);
             menuItem.icofavBtn = icofavBtn;
-        }
-
-        menuItem.menu = this.menu;
-        menuItem.clipContents = buffer;
-        menuItem.clipFavorite = favorite;
-        menuItem.type = type;
-        menuItem.radioGroup = this.clipItemsRadioGroup;
-        menuItem.buttonPressId = menuItem.connect('activate', Lang.bind(menuItem, this._onMenuItemSelectedAndMenuClose));
-        
-        if (type === "text") {
+        } 
+        else {
             this._setEntryLabel(menuItem);
         }
+        
         this.clipItemsRadioGroup.push(menuItem);
 
 	// Favorite button
