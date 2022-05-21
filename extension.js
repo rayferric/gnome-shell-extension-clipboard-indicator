@@ -61,7 +61,7 @@ let SUPPORT_PNG          = false;
 const ClipboardIndicator = GObject.registerClass(
 class ClipboardIndicator extends PanelMenu.Button {
 
-	destroy () {
+    destroy () {
         this._disconnectSettings();
         this._unbindShortcuts();
         this._clearClipboardTimeout();
@@ -70,10 +70,10 @@ class ClipboardIndicator extends PanelMenu.Button {
         this._clearDelayedSelectionTimeout();
 
         // Call parent
-		super.destroy();
+        super.destroy();
     }
 
-	_init () {
+    _init () {
         super._init(0.0, "ClipboardIndicator");
         this._settingsChangedId = null;
         this._clipboardTimeoutId = null;
@@ -296,7 +296,7 @@ class ClipboardIndicator extends PanelMenu.Button {
         }
         this.clipItemsRadioGroup.push(menuItem);
 
-	// Favorite button
+    // Favorite button
         let icon_name = favorite ? 'starred-symbolic' : 'non-starred-symbolic';
         let iconfav = new St.Icon({
             icon_name: icon_name,
@@ -320,7 +320,7 @@ class ClipboardIndicator extends PanelMenu.Button {
             })
         );
 
-	// Delete button
+    // Delete button
         let icon = new St.Icon({
             icon_name: 'edit-delete-symbolic', //'mail-attachment-symbolic',
             style_class: 'system-status-icon'
